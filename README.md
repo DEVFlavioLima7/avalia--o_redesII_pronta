@@ -22,8 +22,10 @@ Cada roteador:
 
 1. **Clone o repositório:**
    ```bash
-   git clone https://github.com/DEVFlavioLima7/redesII
-   cd seu_repositorio
+   git clone https://github.com/DEVFlavioLima7/avalia--o_redesII_pronta
+   
+   cd avalia--o_redesII_pronta
+
 
 
 2.Construa e execute os containers:
