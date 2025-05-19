@@ -1,0 +1,244 @@
+version: "3"
+
+services:
+
+  router1:
+    build: ./router
+    container_name: router_1
+    privileged: true
+    cap_add:
+      - NET_ADMIN
+    environment:
+      - ROUTER_ID=router1
+      - ROUTER_PORT=5000
+      - NEIGHBORS=router2:172.21.2.2:5000:1
+    networks:
+      net_router1:
+        ipv4_address: 172.21.1.2
+      net_router2:
+        ipv4_address: 172.21.2.3
+
+  router2:
+    build: ./router
+    container_name: router_2
+    privileged: true
+    cap_add:
+      - NET_ADMIN
+    environment:
+      - ROUTER_ID=router2
+      - ROUTER_PORT=5000
+      - NEIGHBORS=router1:172.21.1.2:5000:1,router3:172.21.3.2:5000:1
+    networks:
+      net_router2:
+        ipv4_address: 172.21.2.2
+      net_router1:
+        ipv4_address: 172.21.1.3
+      net_router3:
+        ipv4_address: 172.21.3.3
+
+  router3:
+    build: ./router
+    container_name: router_3
+    privileged: true
+    cap_add:
+      - NET_ADMIN
+    environment:
+      - ROUTER_ID=router3
+      - ROUTER_PORT=5000
+      - NEIGHBORS=router2:172.21.2.2:5000:1,router4:172.21.4.2:5000:1
+    networks:
+      net_router3:
+        ipv4_address: 172.21.3.2
+      net_router2:
+        ipv4_address: 172.21.2.4
+      net_router4:
+        ipv4_address: 172.21.4.3
+
+  router4:
+    build: ./router
+    container_name: router_4
+    privileged: true
+    cap_add:
+      - NET_ADMIN
+    environment:
+      - ROUTER_ID=router4
+      - ROUTER_PORT=5000
+      - NEIGHBORS=router3:172.21.3.2:5000:1,router5:172.21.5.2:5000:1
+    networks:
+      net_router4:
+        ipv4_address: 172.21.4.2
+      net_router3:
+        ipv4_address: 172.21.3.4
+      net_router5:
+        ipv4_address: 172.21.5.3
+
+  router5:
+    build: ./router
+    container_name: router_5
+    privileged: true
+    cap_add:
+      - NET_ADMIN
+    environment:
+      - ROUTER_ID=router5
+      - ROUTER_PORT=5000
+      - NEIGHBORS=router4:172.21.4.2:5000:1
+    networks:
+      net_router5:
+        ipv4_address: 172.21.5.2
+      net_router4:
+        ipv4_address: 172.21.4.4
+
+ 
+
+  host1:
+    build: ./host
+    container_name: host1
+    cap_add:
+      - NET_ADMIN
+    environment:
+      - CONNECTION_ROUTER=172.21.1.2
+      - DESTINATION=172.21.5.10
+    networks:
+      net_router1:
+        ipv4_address: 172.21.1.10
+
+  host1b:
+    build: ./host
+    container_name: host1b
+    cap_add:
+      - NET_ADMIN
+    environment:
+      - CONNECTION_ROUTER=172.21.1.2
+      - DESTINATION=172.21.5.20
+    networks:
+      net_router1:
+        ipv4_address: 172.21.1.20
+
+  host2:
+    build: ./host
+    container_name: host2
+    cap_add:
+      - NET_ADMIN
+    environment:
+      - CONNECTION_ROUTER=172.21.2.2
+      - DESTINATION=172.21.4.10
+    networks:
+      net_router2:
+        ipv4_address: 172.21.2.10
+
+  host2b:
+    build: ./host
+    container_name: host2b
+    cap_add:
+      - NET_ADMIN
+    environment:
+      - CONNECTION_ROUTER=172.21.2.2
+      - DESTINATION=172.21.4.20
+    networks:
+      net_router2:
+        ipv4_address: 172.21.2.20
+
+  host3:
+    build: ./host
+    container_name: host3
+    cap_add:
+      - NET_ADMIN
+    environment:
+      - CONNECTION_ROUTER=172.21.3.2
+      - DESTINATION=172.21.1.10
+    networks:
+      net_router3:
+        ipv4_address: 172.21.3.10
+
+  host3b:
+    build: ./host
+    container_name: host3b
+    cap_add:
+      - NET_ADMIN
+    environment:
+      - CONNECTION_ROUTER=172.21.3.2
+      - DESTINATION=172.21.1.20
+    networks:
+      net_router3:
+        ipv4_address: 172.21.3.20
+
+  host4:
+    build: ./host
+    container_name: host4
+    cap_add:
+      - NET_ADMIN
+    environment:
+      - CONNECTION_ROUTER=172.21.4.2
+      - DESTINATION=172.21.2.10
+    networks:
+      net_router4:
+        ipv4_address: 172.21.4.10
+
+  host4b:
+    build: ./host
+    container_name: host4b
+    cap_add:
+      - NET_ADMIN
+    environment:
+      - CONNECTION_ROUTER=172.21.4.2
+      - DESTINATION=172.21.2.20
+    networks:
+      net_router4:
+        ipv4_address: 172.21.4.20
+
+  host5:
+    build: ./host
+    container_name: host5
+    cap_add:
+      - NET_ADMIN
+    environment:
+      - CONNECTION_ROUTER=172.21.5.2
+      - DESTINATION=172.21.3.10
+    networks:
+      net_router5:
+        ipv4_address: 172.21.5.10
+
+  host5b:
+    build: ./host
+    container_name: host5b
+    cap_add:
+      - NET_ADMIN
+    environment:
+      - CONNECTION_ROUTER=172.21.5.2
+      - DESTINATION=172.21.3.20
+    networks:
+      net_router5:
+        ipv4_address: 172.21.5.20
+
+
+networks:
+  net_router1:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.21.1.0/24
+
+  net_router2:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.21.2.0/24
+
+  net_router3:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.21.3.0/24
+
+  net_router4:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.21.4.0/24
+
+  net_router5:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.21.5.0/24
+
